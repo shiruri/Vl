@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- We load Emilys Candy since all text uses it -->
+  <link href="https://fonts.googleapis.com/css2?family=Emilys+Candy&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IYAAAA</title>
+  <style>
+    /* Define CSS variables for theming */
+    :root {
+      --scrollbar-width: 3px;
+      --scrollbar-height: 12px;
+      --scrollbar-track: linear-gradient(180deg, #27e97e, #3fe239);
+      --scrollbar-thumb: linear-gradient(180deg, #93cfa9, #65cf7c);
+      --scrollbar-thumb-hover: linear-gradient(180deg, #97dfb1, #b4f5b1);
+      --disc-bg: repeating-radial-gradient(circle 10em at center, 
+                  rgb(10, 17, 19) 0%, 
+                  rgb(2, 41, 50) 2.2%, 
+                  rgb(19, 31, 33) 3.6%, 
+                  rgb(11, 29, 33) 4.8%, 
+                  rgb(11, 29, 33) 4.8%, 
+                  rgb(16, 43, 49) 6.7%);
+      /* Default button colors (green theme) */
+      --btn-bg: #64fa96;
+      --btn-bg-hover: #9addbe;
+      --btn-color: white;
+    }
+
+    /* Scrollbar styling using CSS variables */
+    ::-webkit-scrollbar {
+      width: var(--scrollbar-width);
+      height: var(--scrollbar-height);
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 10px;
+      border: 3px solid #9bf39b;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover);
+    }
+
+    /* Global styles */
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #efefef;
+      background-image: url("bg.jpg");
+      background-size: cover;
+      flex-direction: column;
+      font-family: "Emilys Candy", cursive;
+      font-weight: 400;
+      font-optical-sizing: auto;
+      transition: background-color 0.5s ease, background-image 0.5s ease;
+      overflow-x: hidden;
+    }
+    *, h1 {
+      font-family: "Emilys Candy", cursive;
+      color: white;
+    }
+
+    /* Pulse animation for buttons */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Template image styling for buttons (placeholder - replace "template.png" as needed) */
+    .btn-template {
+      background-image: url("template.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    /* Music Case (Vinyl record) Styles */
+    .music-case {
+      width: 300px;
+      height: 300px;
+      position: relative;
+      margin-bottom: 30px;
+      cursor: pointer;
+    }
+    .icon {
+      width: 30px;
+      height: 130px;
+      background-color: rgb(169, 224, 147);
+      transform: skew(-20deg);
+      background-image: linear-gradient(#f35353, #b1ee99);
+      position: relative;
+    }
+    /* Existing icon decoration */
+    .icon::before {
+      content: " ";
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      position: absolute;
+      bottom: -20px;
+      right: 2px;
+      transform: skew(20deg);
+      background-color: #F79374;
+    }
+    /* New romantic heart decoration on the icon */
+    .icon::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 29.6'><path d='M23.6,0c-3.4,0-6.4,2.2-7.6,5.3C14.8,2.2,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4 c0,9.2,16,21.2,16,21.2s16-12,16-21.2C32,3.8,28.2,0,23.6,0z' fill='%23ff6699'/></svg>") no-repeat center;
+      background-size: contain;
+    }
+    .front-case,
+    .back-case {
+      width: 300px;
+      height: 300px;
+      border-radius: 10px;
+      background-color: rgba(190, 230, 175, 0.8);
+      position: relative;
+      z-index: 2;
+      transition: transform 0.3s ease;
+      will-change: transform;
+    }
+    .front-case {
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .back-case {
+      z-index: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+      box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.3);
+    }
+    .disc {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background-image: var(--disc-bg);
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      transition: transform 0.5s ease-out;
+      z-index: 1;
+      overflow: hidden;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      will-change: transform;
+    }
+    .disc::before,
+    .disc::after {
+      content: " ";
+      border-bottom: 140px solid rgba(255, 255, 255, 0.1);
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      height: 0;
+      width: 10px;
+      position: absolute;
+    }
+    .disc::before {
+      left: 0;
+      right: 0;
+      margin: auto;
+      top: 50%;
+    }
+    .disc::after {
+      left: 0;
+      right: 0;
+      margin: auto;
+      transform: rotate(180deg);
+    }
+    .hole {
+      width: 100px;
+      height: 100px;
+      background-color: #e74c3c;
+      border-radius: 50%;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      position: absolute;
+      z-index: 1;
+    }
+    .hole::before {
+      content: " ";
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #efefef;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      position: absolute;
+      margin: auto;
+      box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2);
+    }
+    .music-case:hover .front-case,
+    .music-case:hover .back-case {
+      transform: translateX(-100px);
+    }
+    .music-case:hover .disc {
+      transform: translateX(100px) rotate(380deg);
+    }
+
+    /* Audio Player Styles */
+    .audio-player {
+      margin-top: 20px;
+      width: 300px;
+      text-align: center;
+    }
+    .audio-player audio {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .audio-player button {
+      padding: 10px 20px;
+      background: var(--btn-bg);
+      color: var(--btn-color);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .audio-player button:hover {
+      background: var(--btn-bg-hover);
+      transform: scale(1.05);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Loading Screen and Cloud */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, #51e6b9, #99f0a4);
+      display: grid;
+      place-items: center;
+      z-index: 1000;
+      animation: fadeOut 2s ease-in-out forwards;
+    }
+    .cloud {
+      width: 150px;
+      height: 60px;
+      background: white;
+      border-radius: 50px;
+      position: relative;
+      animation: float 4s infinite ease-in-out;
+    }
+    .cloud::before,
+    .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud::before {
+      width: 80px;
+      height: 80px;
+      top: -40px;
+      left: 20px;
+    }
+    .cloud::after {
+      width: 60px;
+      height: 60px;
+      top: -30px;
+      right: 20px;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    /* Card Layout Styles */
+    .card-container {
+      display: none; /* Initially hidden */
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      animation: fadeIn 1s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card {
+    padding-top: 30px;
+      position: relative;
+      width: 600px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 2px dashed rgba(255, 105, 180, 0.5);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      height: auto;
+      justify-content: center;
+      padding: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><path d='M50 90 Q 20 50 50 10 Q 80 50 50 90 Z' fill='%23ff69b4' opacity='0.2'/></svg>");
+      background-repeat: repeat;
+      background-size: 50px 50px;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card h2 {
+      font-size: 24px;
+      color: #2c3e50;
+      text-align: center;
+      line-height: 1.4;
+    }
+    /* Decorative heart icons for the card */
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 40px;
+      height: 40px;
+      background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 29.6'><path d='M23.6,0c-3.4,0-6.4,2.2-7.6,5.3C14.8,2.2,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4 c0,9.2,16,21.2,16,21.2s16-12,16-21.2C32,3.8,28.2,0,23.6,0z' fill='%23ff6699'/></svg>") no-repeat center;
+      background-size: contain;
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      width: 40px;
+      height: 40px;
+      background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 29.6'><path d='M23.6,0c-3.4,0-6.4,2.2-7.6,5.3C14.8,2.2,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4 c0,9.2,16,21.2,16,21.2s16-12,16-21.2C32,3.8,28.2,0,23.6,0z' fill='%23ff6699'/></svg>") no-repeat center;
+      background-size: contain;
+    }
+
+    /* Next Section Button */
+    #next-section-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: var(--btn-bg);
+      color: var(--btn-color);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    #next-section-btn:hover {
+      background: var(--btn-bg-hover);
+      transform: scale(1.05);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Theme Button Styles */
+    #theme-buttons {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .theme-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: transform 0.2s ease;
+    }
+    .theme-btn:hover {
+      transform: scale(1.1);
+    }
+    .theme-btn.red {
+      background-color: #ff4d4d;
+      color: white;
+    }
+    .theme-btn.black {
+      background-color: #333;
+      color: white;
+    }
+    .theme-btn.blue {
+      background-color: #a0f38c;
+      color: white;
+    }
+
+    /* Return Back Button (Sticky & Animated) */
+    .back-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      background: var(--btn-bg);
+      color: var(--btn-color);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: background 0.3s ease, transform 0.2s ease;
+      animation: slideIn 0.5s ease forwards;
+      z-index: 1100;
+      display: none; /* Initially hidden */
+    }
+    .back-btn:hover {
+      background: var(--btn-bg-hover);
+      transform: scale(1.05);
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @media (max-width: 768px) {
+  body {
+    background-size: contain;
+    padding: 10px;
+  }
+
+  .music-case {
+    width: 250px;
+    height: 250px;
+    margin-bottom: 20px;
+  }
+
+  .front-case,
+  .back-case {
+    width: 250px;
+    height: 250px;
+  }
+
+  .disc {
+    width: 210px;
+    height: 210px;
+  }
+
+  .card {
+    width: 90%;
+    max-width: 350px;
+    padding: 20px;
+  }
+
+  .card h2 {
+    font-size: 18px;
+  }
+
+  #theme-buttons {
+    top: 10px;
+    right: 10px;
+    flex-direction: column;
+  }
+
+  .theme-btn {
+    padding: 8px 15px;
+    font-size: 12px;
+  }
+
+  .audio-player {
+    width: 90%;
+  }
+}
+
+/* Add these animations */
+@keyframes heartPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(0deg); }
+  100% { transform: translateY(-100vh) rotate(360deg); }
+}
+
+/* Petals animation */
+.petals {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.petal {
+  position: absolute;
+  font-size: 24px;
+  animation: floatUp 15s linear infinite;
+  opacity: 0.7;
+}
+  </style>
+</head>
+<body>
+  <div id="loading-screen">
+    <div class="cloud"></div>
+  </div>
+  <div class="petals"></div>
+
+  <!-- Theme Buttons -->
+  <div id="theme-buttons">
+    <!-- "Original theme" is green -->
+    <button class="theme-btn blue btn-template" onclick="changeTheme('green')">Green</button>
+    <!-- Tbhk: dark red gradient -->
+    <button class="theme-btn red btn-template" onclick="changeTheme('red')">Red</button>
+    <!-- Lev Haiba: gray -->
+    <button class="theme-btn black btn-template" onclick="changeTheme('black')">Gray</button>
+  </div>
+
+  <div class="music-case">
+    <div class="front-case">
+      <div class="icon"></div>
+    </div>
+    <div class="disc">
+      <div class="hole"></div>
+    </div>
+    <div class="back-case"></div>
+  </div>
+
+  <!-- Audio Player -->
+  <div class="audio-player">
+    <button id="play-pause-btn" class="btn-template">Play</button>
+    <audio id="audio" src="bg2.mp3"></audio>
+  </div>
+  <h1>Melt - ryo (Hatsune Miku)</h1>
+  
+  <!-- Next Section Button -->
+  <button id="next-section-btn" class="btn-template">Letter For You</button>
+  <a href="index.html">
+  <button id="next-section-btn" class="btn-template">Back To Previous</button></a>
+
+
+  <!-- Card Container -->
+  <div class="card-container">
+    <div class="card">
+      <h2>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ignore this just to fill in the gap if its bugs ehe</h2>
+     </div>
+     <br>
+      <div class="card">
+      <h2>Sooo hello once againnn if you are reading this thank youu ˗ˏˋ ꒰ ♡ ꒱ ˎˊ˗ this is basically me spouting my feelings so yes AHHAHAH be ready to cringe so just wanna say yoouu are really beautiful I saved this it goes into saying like if i know every language in the world ill still be left speechless on how beautiful you are AAA ITS CHEEKY I KNOW BUT YES alsoo once again just wanna clarify youu dont have too respond with anythingg if ever also i want to stil be friends if things go right if left then i respect and still gladd to met youu yess i believe that uhh a relationshipp key is keeping the friendship alive since its basically the root hehehe OKAY THIS IS REALLY CHEEKY I CANT IM NOT USED TO THIS AHHAAH youre reallyy really cuteee aswelll and my reasons is not all about looks on liking youu its because i also feel comfortable talking to youu and really enjoy your company i loved the late night talks and making you laughh your wordss and your kindness to mee we've onlyy met twicee i know but there just somethingg in mee that keeps wanting to know more about youu wait ive always wanted to say this ahem ahem AHHAHA maari ba kitang ligawan? AAA call it cheek but uhh thats the love i learned while growing up very naive but yes AHAHHAHA well thank youuu for reading once againn no matter what happens after thiss im really glad ive met youuu ‧₊˚ ☁️⋅♡𓂃 ࣪ ִֶָ☾  alsoo pss i didnt add like details muchh since i just want this to be straightforward so yepp<br></h2>
+     </div>
+        
+  </div>
+  
+
+
+
+  <!-- Return Back Button (appears in card section) -->
+  <button class="back-btn btn-template" id="back-btn">Return Back</button>
+
+  <script>
+    // Audio Player Controls
+    const audio = document.getElementById('audio');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+
+    playPauseBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        playPauseBtn.textContent = 'Pause';
+      } else {
+        audio.pause();
+        playPauseBtn.textContent = 'Play';
+      }
+    });
+
+    // Next Section Button Logic
+    const nextSectionBtn = document.getElementById('next-section-btn');
+    const audioPlayer = document.querySelector('.audio-player');
+    const title = document.querySelector('h1');
+    const cardContainer = document.querySelector('.card-container');
+    const backBtn = document.getElementById('back-btn');
+
+    nextSectionBtn.addEventListener('click', () => {
+      // Hide the current content
+      musicCase.style.display = 'none';
+      audioPlayer.style.display = 'none';
+      title.style.display = 'none';
+      nextSectionBtn.style.display = 'none';
+
+      // Show the new card layout and sticky back button
+      cardContainer.style.display = 'flex';
+      backBtn.style.display = 'block';
+    });
+
+    // Return Back Button Logic
+    backBtn.addEventListener('click', () => {
+      // Show the original content
+      musicCase.style.display = 'flex';
+      audioPlayer.style.display = 'block';
+      title.style.display = 'block';
+      nextSectionBtn.style.display = 'block';
+      cardContainer.style.display = 'none';
+      backBtn.style.display = 'none';
+    });
+
+    // Theme Change Functionality using CSS variables
+    function changeTheme(theme) {
+      const body = document.body;
+      const root = document.documentElement;
+      if (theme === 'red') {
+        body.style.backgroundImage = 'url("bg2.jpg")';
+        root.style.setProperty('--scrollbar-track', 'linear-gradient(180deg, #8b0000, #ff0000)');
+        root.style.setProperty('--scrollbar-thumb', 'linear-gradient(180deg, #ff4d4d, #cc0000)');
+        root.style.setProperty('--scrollbar-thumb-hover', 'linear-gradient(180deg, #ff6666, #aa0000)');
+        root.style.setProperty('--disc-bg', 'linear-gradient(45deg, #aa0000, #ff4444)');
+        root.style.setProperty('--btn-bg', 'linear-gradient(45deg, #aa0000, #ff4444)');
+        root.style.setProperty('--btn-bg-hover', 'linear-gradient(45deg, #ff6666, #aa0000)');
+        root.style.setProperty('--btn-color', 'white');
+      } else if (theme === 'black') {
+        body.style.backgroundImage = 'url("bg3.jpg")';
+        root.style.setProperty('--scrollbar-track', 'linear-gradient(180deg, #666666, #888888)');
+        root.style.setProperty('--scrollbar-thumb', 'linear-gradient(180deg, #999999, #777777)');
+        root.style.setProperty('--scrollbar-thumb-hover', 'linear-gradient(180deg, #bbbbbb, #888888)');
+        root.style.setProperty('--disc-bg', 'linear-gradient(45deg, #666, #999)');
+        root.style.setProperty('--btn-bg', 'linear-gradient(45deg, #555555, #888888)');
+        root.style.setProperty('--btn-bg-hover', 'linear-gradient(45deg, #666666, #999999)');
+        root.style.setProperty('--btn-color', 'white');
+      } else { // default green theme
+        body.style.backgroundImage = 'url("bg.jpg")';
+        root.style.setProperty('--scrollbar-track', 'linear-gradient(180deg, #27e97e, #3fe239)');
+        root.style.setProperty('--scrollbar-thumb', 'linear-gradient(180deg, #93cfa9, #65cf7c)');
+        root.style.setProperty('--scrollbar-thumb-hover', 'linear-gradient(180deg, #97dfb1, #b4f5b1)');
+        root.style.setProperty('--disc-bg', 'repeating-radial-gradient(circle 10em at center, rgb(10, 17, 19) 0%, rgb(2, 41, 50) 2.2%, rgb(19, 31, 33) 3.6%, rgb(11, 29, 33) 4.8%, rgb(11, 29, 33) 4.8%, rgb(16, 43, 49) 6.7%)');
+        root.style.setProperty('--btn-bg', '#64fa96');
+        root.style.setProperty('--btn-bg-hover', '#9addbe');
+        root.style.setProperty('--btn-color', 'white');
+      }
+    }
+      // Create falling petals
+  function createPetals() {
+    const petalEmojis = ['🌸', '💮', '🏵️', '💐', '🌺'];
+    const petalsContainer = document.querySelector('.petals');
+    
+    for (let i = 0; i < 20; i++) {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      petal.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+      petal.style.left = Math.random() * 100 + 'vw';
+      petal.style.animationDelay = Math.random() * 5 + 's';
+      petal.style.animationDuration = 8 + Math.random() * 7 + 's';
+      petalsContainer.appendChild(petal);
+    }
+  }
+
+  // Add heart pulse animation to music case
+  const musicCase = document.querySelector('.music-case');
+  musicCase.addEventListener('click', () => {
+    const heart = document.createElement('div');
+    heart.style.position = 'absolute';
+    heart.style.fontSize = '40px';
+    heart.style.animation = 'heartPulse 1s ease-out';
+    heart.textContent = '💖';
+    musicCase.appendChild(heart);
+    
+    setTimeout(() => heart.remove(), 1000);
+  });
+
+
+  // Initialize petals
+  createPetals();
+
+  // Add touch event for mobile
+  let touchTimer;
+  card.addEventListener('touchstart', (e) => {
+    touchTimer = setTimeout(() => {
+      card.style.transform = 'scale(1.1)';
+      card.style.backgroundColor = 'rgba(255, 192, 203, 0.9)';
+    }, 500);
+  });
+
+  card.addEventListener('touchend', () => {
+    clearTimeout(touchTimer);
+    card.style.transform = 'scale(1)';
+    card.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+  });
+
+  // Prevent horizontal scroll on mobile
+  document.documentElement.style.overflowX = 'hidden';
+  document.body.style.overflowX = 'hidden';
+  </script>
+</body>
+</html>
